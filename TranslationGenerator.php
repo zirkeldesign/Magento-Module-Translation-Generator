@@ -1,4 +1,11 @@
 <?php
+/**
+ * TranslationGenerator.php
+ *
+ * @author  Thai Nguyen
+ * @author	Daniel Sturm
+ * @build	2016-11-15
+ */
 
 ini_set('display_errors', 1);
 
