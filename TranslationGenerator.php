@@ -153,7 +153,7 @@ class TranslationGenerator
         if (is_string($files)) {
             $files = $this->__getFilesByExtension($files);
         }
-        for ($i = 0, $length = $files; $i < $length; ++$i) {
+        for ($i = 0, $length = count($files); $i < $length; ++$i) {
             $this->__addFromFile($files[$i]);
         }
     }
@@ -187,7 +187,7 @@ class TranslationGenerator
     {
         $files = $this->__getFilesByExtension('xml');
 
-        for ($i = 0, $length = $files; $i < $length; ++$i) {
+        for ($i = 0, $length = count($files); $i < $length; ++$i) {
             $file_path = $files[$i];
             $file_content = file_get_contents($file_path);
             $xml = simplexml_load_string($file_content);
