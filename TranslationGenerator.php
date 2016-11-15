@@ -7,7 +7,10 @@
  * @build	2016-11-15
  */
 
+use Stichoza\GoogleTranslate\TranslateClient;
+
 ini_set('display_errors', 1);
+!defined('LB') && define('LB', chr(10));
 
 /**
  * class TranslationGenerator
@@ -25,6 +28,12 @@ class TranslationGenerator
      * @var [type]
      */
     protected $need_to_translate = [];
+
+    /**
+     * [$_language description]
+     * @var [type]
+     */
+    protected $_language;
 
     /**
      * [__construct description]
@@ -58,6 +67,55 @@ class TranslationGenerator
     }
 
     /**
+     * [translationLanguage description]
+     * @method translationLanguage
+     * @param  [type] $language [description]
+     * @return [type] [description]
+     */
+    public function translationLanguage($language = null)
+    {
+        if (!is_null($language)) {
+            $this->_language = strtolower($language);
+        }
+
+        if (!is_null($this->_language) &&
+            !isset($this->__tr)) {
+            $this->__tr = new TranslateClient();
+            $this->__tr->setSource('en');
+        }
+
+        if (!is_null($language)) {
+            $this->__tr->setTarget($this->_language);
+        }
+
+        return $this->_language;
+    }
+
+    /**
+     * [__translate description]
+     * @method __translate
+     * @param  [type] $string [description]
+     * @param  [type] $language [description]
+     * @return [type] [description]
+     */
+    private function __translate($string, $language = null)
+    {
+        if (is_null($language)) {
+            $language = $this->translationLanguage();
+        }
+
+        if (!isset($this->__tr)) {
+            return $string;
+        }
+
+        if (!is_null($language)) {
+            $this->__tr->setTarget($language);
+        }
+
+        return $this->__tr->translate($string);
+    }
+
+    /**
      * [getTranslationString description]
      * @method getTranslationString
      * @return [type] [description]
@@ -66,7 +124,7 @@ class TranslationGenerator
     {
         $string = '';
         foreach ($this->need_to_translate as $item) {
-            $string .= $item . ',' . $item . "\n";
+            $string .= $item . ',' . $this->__translate($item) . LB;
         }
         return $string;
     }
@@ -80,7 +138,7 @@ class TranslationGenerator
     {
         $string = '<p>';
         foreach ($this->need_to_translate as $item) {
-            $string .= '"' . $item . '","' . $item . '"' . '</br>';
+            $string .= '"' . $item . '","' . $this->__translate($item) . '"' . '</br>';
         }
         $string .= '</p>';
         return $string;
